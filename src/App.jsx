@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { ImUndo2 } from 'react-icons/im'
 const App = () => {
   const [state, setState] = useState({
     yes: 0,
@@ -23,7 +24,7 @@ const App = () => {
   } else if (yes == 0 && no == 0) {
     porcentaje = 0;
   } else {
-    porcentaje = (100 - (no * 100) / yes).toFixed(0);
+    porcentaje = (100 - (no * 100) / yes).toFixed(2);
   }
 
   const onYes = () => {
@@ -50,7 +51,7 @@ const App = () => {
       className="w-full h-screen grid place-items-center 
                      bg-zinc-800 text-zinc-100 font-Kalam"
     >
-      <div className="w-full auto flex flex-col items-center justify-start gap-8 text-3xl bg-zinc-800">
+      <div className="w-full h-[80%] flex flex-col items-center justify-start gap-10 text-3xl bg-zinc-800">
         <h2>
           Releases{" "}
           <span
@@ -62,15 +63,15 @@ const App = () => {
           </span>
         </h2>
         <button
-          className="w-32 h-32 grid place-items-center
-                         bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 border-4 border-zinc-100 rounded-full text-3xl"
+          className="w-28 h-28 grid place-items-center shadow-lg shadow-zinc-500
+                         bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 border-2 border-zinc-100 rounded-full text-3xl"
           onClick={onYes}
         >
           {yes}
         </button>
         <button
-          className="w-32 h-32 grid place-items-center
-                           bg-red-700 hover:bg-red-800 active:bg-red-900  border-4 border-zinc-100 rounded-full text-3xl"
+          className="w-28 h-28 grid place-items-center shadow-lg shadow-zinc-500
+                           bg-red-700 hover:bg-red-800 active:bg-red-900  border-2 border-zinc-100 rounded-full text-3xl"
           onClick={onNo}
         >
           {no}
@@ -78,10 +79,12 @@ const App = () => {
 
         {!confirm && (
           <button
-            className="px-10 py-4 bg-cyan-700 hover:bg-cyan-800 active:bg-cyan-900 border-4 border-zinc-100 rounded-xl text-2xl"
+            className="px-6 py-4 flex gap-x-2 items-center shadow-lg shadow-zinc-500
+                     bg-cyan-700 hover:bg-cyan-800 active:bg-cyan-900 border-2 border-zinc-100 rounded-xl text-xl"
             onClick={onConfirm}
+            disabled={(yes == 0 && no == 0) ? true : false }
           >
-            Reset
+            <span><ImUndo2 /></span><p>Reset</p>
           </button>
         )}
 
@@ -90,13 +93,15 @@ const App = () => {
             <p>Are you Sure?</p>
             <div className="flex flex-row gap-6">
               <button
-                className="px-8 py-2 bg-zinc-700 hover:bg-zinc-800 active:bg-zinc-900 border-4 border-zinc-100 rounded-xl text-xl"
+                className="px-8 py-2 bg-zinc-700 shadow-lg shadow-zinc-500
+                           hover:bg-zinc-800 active:bg-zinc-900 border-2 border-zinc-100 rounded-xl text-xl"
                 onClick={onCancel}
               >
                 Cancel
               </button>
               <button
-                className="px-8 py-2 bg-cyan-700 hover:bg-cyan-800 active:bg-cyan-900  border-4 border-zinc-100 rounded-xl text-xl"
+                className="px-8 py-2 bg-cyan-700 shadow-lg shadow-zinc-500
+                          hover:bg-cyan-800 active:bg-cyan-900  border-2 border-zinc-100 rounded-xl text-xl"
                 onClick={onReset}
               >
                 OK
