@@ -1,116 +1,56 @@
-import { useState, useEffect } from "react";
-import { ImUndo2 } from 'react-icons/im'
+import { Main } from "./components/Main";
+import { Container } from "./components/Container";
+import { Counter } from "./components/Counter";
+import { Button } from "./components/Button";
+import { Confirm } from "./components/Confirm";
+import { ImUndo2, ImCheckmark, ImCross } from "react-icons/im";
+import { useApp } from "./js/useApp";
+
 const App = () => {
-  const [state, setState] = useState({
-    yes: 0,
-    no: 0,
-    confirm: false,
-  });
-
-  useEffect(() => {
-    const counter = JSON.parse(localStorage.getItem("COUNTER"));
-    if (counter) {
-      setState({ ...counter, confirm: false });
-    } else {
-      localStorage.setItem("COUNTER", JSON.stringify({ yes: 0, no: 0 }));
-      setState({ yes: 0, no: 0, confirm: false });
-    }
-  }, []);
-
-  const { yes, no, confirm } = state;
-  let porcentaje;
-  if (yes == 0 && no > 0) {
-    porcentaje = -100;
-  } else if (yes == 0 && no == 0) {
-    porcentaje = 0;
-  } else {
-    porcentaje = (100 - (no * 100) / yes).toFixed(2);
-  }
-
-  const onYes = () => {
-    setState({ ...state, yes: yes + 1 });
-    localStorage.setItem("COUNTER", JSON.stringify({ yes: yes + 1, no }));
-  };
-  const onNo = () => {
-    setState({ ...state, no: no + 1 });
-    localStorage.setItem("COUNTER", JSON.stringify({ yes, no: no + 1 }));
-  };
-  const onConfirm = () => {
-    setState({ ...state, confirm: true });
-  };
-  const onReset = () => {
-    setState({ ...state, yes: 0, no: 0, confirm: false });
-    localStorage.setItem("COUNTER", JSON.stringify({ yes: 0, no: 0 }));
-  };
-  const onCancel = () => {
-    setState({ ...state, confirm: false });
-  };
+  const {
+    values: { yes, no, confirm, porcentaje },
+    actions: { onYes, onNo, onConfirm, onReset, onCancel },
+  } = useApp();
 
   return (
-    <main
-      className="w-full h-screen grid place-items-center 
-                     bg-zinc-800 text-zinc-100 font-Kalam"
-    >
-      <div className="w-full h-[80%] flex flex-col items-center justify-start gap-10 text-3xl bg-zinc-800">
-        <h2>
-          Releases{" "}
-          <span
-            className={`font-bold ${
-              porcentaje < 80 ? "text-red-500" : "text-emerald-500"
-            }`}
-          >
-            {porcentaje}%
-          </span>
-        </h2>
-        <button
-          className="w-28 h-28 grid place-items-center shadow-lg shadow-zinc-500
-                         bg-emerald-700 hover:bg-emerald-800 active:bg-emerald-900 border-2 border-zinc-100 rounded-full text-3xl"
-          onClick={onYes}
-        >
+    <Main>
+      <Container>
+        <Counter>{porcentaje}</Counter>
+        <Button typeButton={"success"} action={onYes}>
           {yes}
-        </button>
-        <button
-          className="w-28 h-28 grid place-items-center shadow-lg shadow-zinc-500
-                           bg-red-700 hover:bg-red-800 active:bg-red-900  border-2 border-zinc-100 rounded-full text-3xl"
-          onClick={onNo}
-        >
+        </Button>
+        <Button typeButton={"danger"} action={onNo}>
           {no}
-        </button>
-
+        </Button>
         {!confirm && (
-          <button
-            className="px-6 py-4 flex gap-x-2 items-center shadow-lg shadow-zinc-500
-                     bg-cyan-700 hover:bg-cyan-800 active:bg-cyan-900 border-2 border-zinc-100 rounded-xl text-xl"
-            onClick={onConfirm}
-            disabled={(yes == 0 && no == 0) ? true : false }
+          <Button
+            typeButton={"primary"}
+            action={onConfirm}
+            disabled={yes == 0 && no == 0}
           >
-            <span><ImUndo2 /></span><p>Reset</p>
-          </button>
+            <ImUndo2 />
+            Reset
+          </Button>
         )}
-
         {!!confirm && (
-          <>
-            <p>Are you Sure?</p>
-            <div className="flex flex-row gap-6">
-              <button
-                className="px-8 py-2 bg-zinc-700 shadow-lg shadow-zinc-500
-                           hover:bg-zinc-800 active:bg-zinc-900 border-2 border-zinc-100 rounded-xl text-xl"
-                onClick={onCancel}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-8 py-2 bg-cyan-700 shadow-lg shadow-zinc-500
-                          hover:bg-cyan-800 active:bg-cyan-900  border-2 border-zinc-100 rounded-xl text-xl"
-                onClick={onReset}
-              >
-                OK
-              </button>
-            </div>
-          </>
+          <Confirm>
+            <Button typeButton={"secondary"} action={onCancel}>
+              <span className="text-sm">
+                <ImCross />
+              </span>
+              <p>Cancel</p>
+            </Button>
+            <Button typeButton={"primary"} action={onReset}>
+              <span className="text-sm">
+                <ImCheckmark />
+              </span>
+              <p>OK</p>
+            </Button>
+          </Confirm>
         )}
-      </div>
-    </main>
+      </Container>
+    </Main>
   );
 };
+
 export default App;
